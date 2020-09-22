@@ -22,6 +22,9 @@ class EncerradorTest extends TestCase
         );
 
         $leilaoDao = $this->createMock(LeilaoDao::class);
+        // $leilaoDao = $this->getMockBuilder(LeilaoDao::class)
+        //     ->setConstructorArgs([new \PDO('sqlite::memory:')])
+        //     ->getMock();
         $leilaoDao
             ->method('recuperarNaoFinalizados')
             ->willReturn([$fiat147, $variant]);
