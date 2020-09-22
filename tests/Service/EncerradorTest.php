@@ -7,32 +7,6 @@ use Alura\Leilao\Dao\Leilao as LeilaoDao;
 use Alura\Leilao\Model\{ Lance, Leilao, Usuario };
 use Alura\Leilao\Service\{ Avaliador, Encerrador };
 
-
-class LeilaoDaoMock extends LeilaoDao
-{
-    private $leiloes = [];
-
-    public function salva(Leilao $leilao): void
-    {
-        // Ao inves de salvar na base, salva em um array na memoria
-        $this->leiloes[] = $leilao;
-    }
-
-    public function recuperarNaoFinalizados(): array
-    {
-        return array_filter($this->leiloes, fn (Leilao $leilao) => !$leilao->estaFinalizado());
-    }
-
-    public function recuperarFinalizados(): array
-    {
-        return array_filter($this->leiloes, fn (Leilao $leilao) => $leilao->estaFinalizado());
-    }
-
-    public function atualiza(Leilao $leilao)
-    {
-    }
-}
-
 class EncerradorTest extends TestCase
 {
     public function testLeiloesComMaisDeUmaSemanaDevemSerEncerrados()
@@ -47,7 +21,13 @@ class EncerradorTest extends TestCase
             new \DateTimeImmutable('10 days ago')
         );
 
-        $leilaoDao = new LeilaoDaoMock();
+        $leilaoDao = $this->createMock(LeilaoDao::class);
+        $leilaoDao
+            ->method('recuperarNaoFinalizados')
+            ->willReturn([$fiat147, $variant]);
+        $leilaoDao
+            ->method('recuperarFinalizados')
+            ->willReturn([$fiat147, $variant]);
         $leilaoDao->salva($fiat147);
         $leilaoDao->salva($variant);
 
