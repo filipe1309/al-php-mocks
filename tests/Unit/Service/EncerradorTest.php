@@ -1,6 +1,6 @@
 <?php
 
-namespace Alura\Leilao\Tests\Domain;
+namespace Alura\Leilao\Tests\Unit\Domain;
 
 use PHPUnit\Framework\TestCase;
 use Alura\Leilao\Dao\Leilao as LeilaoDao;
