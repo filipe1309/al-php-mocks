@@ -27,16 +27,14 @@ class LeilaoDaoTest extends TestCase
         self::$pdo->beginTransaction();
     }
 
-    public function testBuscaLeiloesNaoFinalizados()
+    /** @dataProvider leiloes */
+    public function testBuscaLeiloesNaoFinalizados(array $leiloes)
     {
         // Arrange - Given
-        $leilao = new Leilao('Variant 0Km');
         $leilaoDao = new LeilaoDao(self::$pdo);
-        $leilaoDao->salva($leilao);
-
-        $leilao = new Leilao('Fiat 147 0KM');
-        $leilao->finaliza();
-        $leilaoDao->salva($leilao);
+        foreach ($leiloes as $leilao) {
+            $leilaoDao->salva($leilao);
+        }
 
         // Act -When
         $leiloes = $leilaoDao->recuperarNaoFinalizados();
@@ -47,16 +45,14 @@ class LeilaoDaoTest extends TestCase
         self::assertSame('Variant 0Km', $leiloes[0]->recuperarDescricao());        
     }
 
-    public function testBuscaLeiloesFinalizados()
+    /** @dataProvider leiloes */
+    public function testBuscaLeiloesFinalizados(array $leiloes)
     {
         // Arrange - Given
-        $leilao = new Leilao('Variant 0Km');
         $leilaoDao = new LeilaoDao(self::$pdo);
-        $leilaoDao->salva($leilao);
-
-        $leilao = new Leilao('Fiat 147 0KM');
-        $leilao->finaliza();
-        $leilaoDao->salva($leilao);
+        foreach ($leiloes as $leilao) {
+            $leilaoDao->salva($leilao);
+        }
 
         // Act -When
         $leiloes = $leilaoDao->recuperarFinalizados();
@@ -70,5 +66,18 @@ class LeilaoDaoTest extends TestCase
     public function tearDown(): void
     {
         self::$pdo->rollBack();
+    }
+
+    public function leiloes()
+    {
+        $naoFinalizado = new Leilao('Variant 0Km');
+        $finalizado = new Leilao('Fiat 147 0KM');
+        $finalizado->finaliza();
+
+        return [
+            [
+                [$naoFinalizado, $finalizado]
+            ]
+        ];
     }
 }
