@@ -27,13 +27,17 @@ class LeilaoDaoTest extends TestCase
         self::$pdo->beginTransaction();
     }
 
-    public function testInsercaoEBuscaDevemFuncionar()
+    public function testBuscaLeiloesNaoFinalizados()
     {
         // Arrange - Given
         $leilao = new Leilao('Variant 0Km');
         $leilaoDao = new LeilaoDao(self::$pdo);
-
         $leilaoDao->salva($leilao);
+
+        $leilao = new Leilao('Fiat 147 0KM');
+        $leilao->finaliza();
+        $leilaoDao->salva($leilao);
+
         // Act -When
         $leiloes = $leilaoDao->recuperarNaoFinalizados();
         
@@ -41,6 +45,26 @@ class LeilaoDaoTest extends TestCase
         self::assertCount(1, $leiloes);
         self::assertContainsOnlyInstancesOf(Leilao::class, $leiloes);
         self::assertSame('Variant 0Km', $leiloes[0]->recuperarDescricao());        
+    }
+
+    public function testBuscaLeiloesFinalizados()
+    {
+        // Arrange - Given
+        $leilao = new Leilao('Variant 0Km');
+        $leilaoDao = new LeilaoDao(self::$pdo);
+        $leilaoDao->salva($leilao);
+
+        $leilao = new Leilao('Fiat 147 0KM');
+        $leilao->finaliza();
+        $leilaoDao->salva($leilao);
+
+        // Act -When
+        $leiloes = $leilaoDao->recuperarFinalizados();
+        
+        // Assert - Then
+        self::assertCount(1, $leiloes);
+        self::assertContainsOnlyInstancesOf(Leilao::class, $leiloes);
+        self::assertSame('Fiat 147 0KM', $leiloes[0]->recuperarDescricao());        
     }
 
     public function tearDown(): void
