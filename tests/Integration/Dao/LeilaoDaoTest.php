@@ -9,11 +9,12 @@ use PHPUnit\Framework\TestCase;
 
 class LeilaoDaoTest extends TestCase
 {
-    private $pdo;
+    private \PDO $pdo;
 
     public function setUp(): void
     {
         $this->pdo = ConnectionCreator::getConnection();
+        $this->pdo->beginTransaction();
     }
 
     public function testInsercaoEBuscaDevemFuncionar()
@@ -34,6 +35,6 @@ class LeilaoDaoTest extends TestCase
 
     public function tearDown(): void
     {
-        $this->pdo->exec('DELETE FROM leiloes');
+        $this->pdo->rollBack();
     }
 }
