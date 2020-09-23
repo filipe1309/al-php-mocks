@@ -42,7 +42,8 @@ class LeilaoDaoTest extends TestCase
         // Assert - Then
         self::assertCount(1, $leiloes);
         self::assertContainsOnlyInstancesOf(Leilao::class, $leiloes);
-        self::assertSame('Variant 0Km', $leiloes[0]->recuperarDescricao());        
+        self::assertSame('Variant 0Km', $leiloes[0]->recuperarDescricao());  
+        self::assertFalse($leiloes[0]->estaFinalizado());
     }
 
     /** @dataProvider leiloes */
@@ -60,7 +61,8 @@ class LeilaoDaoTest extends TestCase
         // Assert - Then
         self::assertCount(1, $leiloes);
         self::assertContainsOnlyInstancesOf(Leilao::class, $leiloes);
-        self::assertSame('Fiat 147 0KM', $leiloes[0]->recuperarDescricao());        
+        self::assertSame('Fiat 147 0KM', $leiloes[0]->recuperarDescricao());
+        self::assertTrue($leiloes[0]->estaFinalizado());
     }
 
     public function tearDown(): void
