@@ -13,7 +13,13 @@ class LeilaoDaoTest extends TestCase
 
     public function setUp(): void
     {
-        $this->pdo = ConnectionCreator::getConnection();
+        $this->pdo = new \PDO('sqlite::memory:');
+        $this->pdo->exec('CREATE TABLE leiloes (
+            id INTEGER PRIMARY KEY,
+            descricao TEXT,
+            finalizado BOOL,
+            dataInicio TEXT
+        );');
         $this->pdo->beginTransaction();
     }
 
