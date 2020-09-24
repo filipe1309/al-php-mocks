@@ -73,6 +73,12 @@ class LeilaoDaoTest extends TestCase
         $leilao = $leilaoDao->salva($leilao);
         $leilao->finaliza();
 
+        // Intermediate asserts (brake AAA)
+        $leiloes = $leilaoDao->recuperarNaoFinalizados();
+        self::assertCount(1, $leiloes);
+        self::assertSame('Brasilia amarela', $leiloes[0]->recuperarDescricao());
+        self::assertFalse($leiloes[0]->estaFinalizado());
+
         // Act - When
         $leilaoDao->atualiza($leilao);
 
@@ -80,6 +86,7 @@ class LeilaoDaoTest extends TestCase
         $leiloes = $leilaoDao->recuperarFinalizados();
         self::assertCount(1, $leiloes);
         self::assertSame('Brasilia amarela', $leiloes[0]->recuperarDescricao());
+        self::assertTrue($leiloes[0]->estaFinalizado());
     }
 
     public function tearDown(): void
